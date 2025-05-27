@@ -1,0 +1,125 @@
+Hier ist eine strukturierte Zusammenfassung der Lernziele für die 2. Prüfung im Modul 347, inklusive Beispielen und Schritt-für-Schritt-Erklärungen:
+🧱 Dockerfile
+Lernziele:
+Einsatz von Multistage-Containern verstehen
+Einen Multistage-Container erstellen
+Fehler in einem Dockerfile erkennen
+
+Beispiel & Erklärung:
+Was ist ein Multistage-Build?
+Ein Multistage-Build teilt den Build-Prozess in mehrere Phasen auf. Vorteil: Der finale Container enthält nur die notwendigen Artefakte – keine Tools oder temporären Dateien.
+
+Schritt-für-Schritt:
+Erstelle ein Dockerfile:
+    # 1. Build Stage
+    FROM node:18 as builder
+    WORKDIR /app
+    COPY . .
+    RUN npm install && npm run build
+    # 2. Production Stage
+    FROM nginx:alpine
+    COPY --from=builder /app/dist /usr/share/nginx/html
+
+Baue das Image:
+    docker build -t my-multistage-app .
+
+Starte den Container:
+    docker run -p 8080:80 my-multistage-app
+
+📄 YAML
+Lernziel:
+Aufbau eines YAML-Files verstehen
+Erklärung & Beispiel:
+YAML ist ein einfaches, lesbares Format für Konfigurationsdateien.
+ name: Beispiel
+ version: "1.0"
+ services:
+   web:
+     image: nginx
+     ports:
+       - "8080:80"
+
+🔧 Docker Compose
+Lernziele:
+Wichtige Schlüsselwörter kennen:
+image, build, container_name, restart, environment, volumes, ports, expose, networks, secrets
+
+ 
+Schlüsselwort	Bedeutung
+image	Image-Name
+build	Pfad zum Dockerfile
+container_name	Fester Name des Containers
+restart	z. B. always, unless-stopped
+environment	Umgebungsvariablen
+volumes	Daten zwischen Host und Container teilen
+ports	Ports auf Host und Container verknüpfen
+expose	Nur intern sichtbarer Port
+networks	Virtuelle Netzwerke
+secrets	Vertrauliche Daten wie Passwörter übergeben
+
+Eine Multi-Container-Anwendung orchestrieren
+Ein .NET-Projekt containerisieren
+Fehler in docker-compose.yml finden
+Netzwerk für Services einrichten
+docker compose up/down mit Optionen -d und --build verwenden
+
+Beispiel & Erklärung:
+Schritt-für-Schritt: einfache docker-compose.yml
+version: "3.8"
+services:
+  web:
+    image: nginx
+    container_name: nginx_web
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+  api:
+    build: ./api
+    container_name: dotnet_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    networks:
+      - app-network
+networks:
+  app-network:
+
+Kommandos:
+docker compose up -d --build
+docker compose down
+
+🔐 Docker Secrets
+Lernziel:
+Verwendung von Secrets zur sicheren Übergabe von Passwörtern
+Schritt-für-Schritt:
+Secret-Datei erstellen:
+
+echo "mysecretpassword" | docker secret create db_password -
+
+In docker-compose.yml verwenden:
+
+services:
+  db:
+    image: mysql
+    secrets:
+      - db_password
+secrets:
+  db_password:
+    external: true
+
+
+🧩 Microservices
+Lernziel:
+Begriff Microservice erklären und Vor-/Nachteile nennen
+
+Erklärung:
+Ein Microservice ist ein kleiner, in sich geschlossener Dienst, der eine spezifische Funktion erfüllt.
+
+Vorteile:
+Skalierbarkeit
+Unabhängige Entwicklung
+Technologische Freiheit
+Nachteile:
+Komplexere Kommunikation
+Verteiltes Debugging
+Höherer Overhead bei Deployment
