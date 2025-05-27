@@ -57,10 +57,56 @@ expose	Nur intern sichtbarer Port
 networks	Virtuelle Netzwerke
 secrets	Vertrauliche Daten wie Passwörter übergeben
 
-Eine Multi-Container-Anwendung orchestrieren
-Ein .NET-Projekt containerisieren
-Fehler in docker-compose.yml finden
-Netzwerk für Services einrichten
+Eine Multi-Container-Anwendung orchestrieren:
+Docker Compose ermöglicht es, mehrere Container gleichzeitig zu starten und zu konfigurieren – wie ein Mini-Cluster.
+💡 Beispiel:
+services:
+  web:
+    image: nginx
+    ports:
+      - "8080:80"
+  db:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=geheim
+📋 Schritte:
+Datei speichern als docker-compose.yml
+Ausführen mit:
+Stoppen mit:
+
+Ein .NET-Projekt containerisieren:
+Du nutzt Dockerfile + Compose, um z. B. eine ASP.NET Core WebAPI in einem Container auszuführen.
+Schrittweise:
+Dockerfile wie oben beschrieben erstellen
+docker-compose.yml erstellen:
+services:
+  api:
+    build: .
+    ports:
+      - "5000:80"
+Starten mit docker compose up --build
+
+Fehler in docker-compose.yml finden:
+Fehlerquellen sind:
+Falsche Einrückung
+Nicht vorhandenes Image
+Ungültiger Port-String
+
+Netzwerk für Services einrichten:
+
+networks:
+  backend:
+services:
+  app:
+    image: myapp
+    networks:
+      - backend
+  db:
+    image: postgres
+    networks:
+      - backend
+➡️ Alle Services im gleichen Netzwerk können sich per Namen erreichen.
+
 docker compose up/down mit Optionen -d und --build verwenden
 
 Beispiel & Erklärung:
